@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500&family=Work+Sans&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Literata', serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Work Sans', sans-serif;
+            text-transform: capitalize;
+        }
+        body {
+            overflow-x: hidden;
+        }
+        a.icone {
+            position: sticky;
+            top: 3px;
+            right: 25vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        a.icone * {
+            margin: 3px;
+        }
+        a.icone img {
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+        a.icone:hover {
+            scale: 110%;
+            transition: scale 0.5s;
+        }
+        a.icone:not(:hover) {
+            scale: 100%;
+            transition: scale 0.5s;
+        }
+        body {
+            background-color: rgba(130, 204, 221,1.0);
+        }
+        header, footer {
+            position: sticky;
+            left: 3px;
+            background-color: rgba(30, 55, 153, 0.59);
+            margin: 0;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        header {
+            top: 3px;
+        }
+        footer {
+            bottom: 3px;
+        }
+        .quadro {
+            width: 97vw;
+            display: flex;
+            flex-wrap: wrap;
+
+        }
+        .quadro * {
+            width: calc(100%/3);
+            
+        }
+        .questão {
+            width: 200px;
+            margin: 30px;
+        }
+        .questão * {
+            width: 50%;
+        }
+        main {
+            min-height: 100vh;
+            height: 100%;
+        }
+        form {
+            max-width: 430px;
+            width: 100%;
+        }
+        form button[type="submit"] {
+            margin-left: calc(100%/2.55);
+            margin-top: 3px;
+        }
+        form div {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px;
+        }
+        form div label {
+            color: #f1f2f6;
+        }
+        .operação {
+            min-width: 100%;
+
+        }
+        .operação span {
+            overflow-wrap: break-word;
+            width: 50%;
+        }
+        .operação[verificação='true'], .operação[verificação='false'] {
+            border-radius: 10px;
+            padding: 10px;
+            color: white;
+            font-weight: 800;
+        }
+        .operação[verificação='true'] {
+            background-color: rgba(0, 128, 0, 0.723);
+        }
+        .operação[verificação='false'] {
+            background-color: rgba(128, 0, 0, 0.723);
+
+        }
+        .operação[verificação='false'] input {
+            text-decoration: line-through;
+        }
+        footer {
+            display: flex;
+        }
+
+        footer * {
+            color: white;
+        }
+        footer input, footer button {
+            color: black;
+        }
+        footer > * {
+            padding: 10px;
+        }
+        div.display {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        div.display * {
+            margin: 3px;
+        }
+        span.nota {
+            min-width: 60px;
+            width: 10px;
+            overflow-x: scroll;
+        }
+        .spaçado > div {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a class="icone">
+            <h1>Math Bullet</h1>
+            <img src="./img/icone.svg">
+        </a>
+        
+    </header>
+    <main>
+        <ol class="quadro">
+            
+        </ol>
+    </main>
+    <footer>
+        <div>
+            <form id="formulario">
+                <div><label for="#inp_1">tamanho maximo (2 a N)</label><input type="number" id="inp_1" value="2" name="tamanho"></div>
+                <div><label for="#inp_2">profundidade (0:naturais a N:reais)</label><input type="number" id="inp_2" value="0" name="profundidade"></div>
+                <div><label for="#inp_3">quantidade de exercicios (5 a N)</label><input type="number" id="inp_3" value="5"  name="quantidade"></div>
+                <button type="submit">gerar</button>
+            </form>
+            <button id="verifique">
+                Verificar
+            </button> 
+        </div>
+        <div>
+            <h3>resultados</h3>
+            <div class="spaçado">
+                <div class="display"><label>taxa de acertos</label><div><span id="nota" class="nota">---.000</span>%</div></div>
+                <div class="display">
+                    <label>media</label><div><span id="media" class="nota">---.000</span>%</div></div>
+            </div>
+        </div>
+    </footer>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+    function print(prompt,to_user=false) {
+        if (to_user) {
+            alert(prompt)
+        } else {
+            console.log(prompt)
+        }
+    }
+    function simp(n=0,s=0) {
+        let u = 10**s
+        return parseInt(n*u)/u
+    }
+    function randrange(x=0,y=1,nfloat=0) {
+        let delta = y-x
+        return x+simp(delta*Math.random(),nfloat)
+    }
+    function escolher(x=Array) {
+        return x[parseInt(x.length*Math.random())]
+    }
+    function criar_exe(tam=2,p=3) {
+        const html = $(`<li class="questão">
+                <div class="operação">
+                    <span name="calculo">5*10</span> = <span name="valc">?</span><br>
+                    <input name="resultado" placeholder='resultado aqui...'>
+                </div>
+            </li>`)
+        let c = 1
+        let conta = []
+        let l = ['+','-','*','/']
+        tam = parseInt(tam)
+        while (c <= tam) {
+            c++
+            conta.push(randrange(0,30,p))
+        }
+        let ct = ''
+        conta.forEach((e) => {
+            ct += escolher(l) + e
+        })
+        ct = ct.slice(1,ct.length)
+        console.log(ct)
+        html.find('span[name="calculo"]').text(ct)
+        return html 
+    }
+    var notas = []
+    $(document).ready(() => {
+        
+        $('#formulario').submit(function (e) {
+            e.preventDefault()
+            function query(q) {
+                return $(e.target).find(`*[name="${q}"]`)
+            }
+            function get(u) {
+                return query(u).val()
+            }
+            print(parseInt(get('quantidade')))
+            const html = $('ol.quadro')
+            for (let c = 0; c < parseInt(get('quantidade')) ; c++) {
+                html.append(`<li class="questão">
+                ${criar_exe(get('tamanho'), get('profundidade')).html()}
+            </li>`)
+            }
+        })
+        $('#verifique').click(function () {
+            let c = 0
+            let C = 0
+            $('.questão .operação input').attr('disabled','true')
+            $('.questão .operação').each(function (e) {
+                const my = $(this)
+                console.log('verificação',my.html())
+                c ++
+                let i = my.find('*[name="calculo"]').text()
+                let p = parseInt($('#inp_2').val())
+                let calculo = simp(eval(i),p)
+                calculo = isNaN(calculo)? 1 : calculo
+                let ret = simp(parseFloat(my.parent().find('*[name="resultado"]').val()),p)
+                let condit = ret === calculo
+                if (condit) {
+                    C ++
+                }
+                console.log(ret,calculo,condit)
+                my.parent().find('*[name="valc"]').text(calculo)
+                my.attr('verificação',condit)
+            })
+            let nota = simp(100/c*C,3)
+            notas.push(nota)
+            let sum = 0
+            let len = 0
+            notas.forEach(function (e) {
+                sum += e
+                len++
+            })
+            let media = sum/len
+            $('#nota').text(nota)
+            $('#media').text(simp(media,3))
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .inverter {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            transform: rotate(0deg);
+        }
+        .inverter p.girar {
+            padding: 3px;
+            transition: 1s;
+
+        }
+        .inverter:hover p.girar {
+            transform: rotate(180deg);
+            
+        }
+        .inverter:not(:hover) p.girar {
+            transform: rotate(0deg);
+            transition-delay: 10s;
+        }
+    </style>
+</head>
+<body>
+    <div class="inverter">
+        <p>1</p>
+        <p class="girar">&lt;</p>
+        <p>2</p>
+    </div>
+    
+</body>
+</html>
